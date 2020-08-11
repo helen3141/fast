@@ -19,6 +19,7 @@ Here you'll find specifications for custom elements and other library features.
 | Combobox | -- | -- |
 | [Dialog](../packages/web-components/fast-foundation/src/dialog/dialog.spec.md) | :white_check_mark: | :white_check_mark: |
 | [Disclosure](../packages/web-components/fast-foundation/src/disclosure/disclosure.spec.md) | :white_check_mark: | -- |
+| [Flyout](./flyout.md) | :white_check_mark: | -- |
 | [Flipper](../packages/web-components/fast-foundation/src/flipper/flipper.spec.md) | :white_check_mark: | :white_check_mark: |
 | [Form associated custom elements](../packages/web-components/fast-foundation/src/form-associated/form-associated-custom-element.spec.md) | :white_check_mark: | :white_check_mark: |
 | Listbox | -- | -- |
