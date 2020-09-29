@@ -7,6 +7,7 @@
 import { Accordion } from '@microsoft/fast-foundation';
 import { AccordionItem } from '@microsoft/fast-foundation';
 import { Anchor } from '@microsoft/fast-foundation';
+import { Avatar } from '@microsoft/fast-foundation';
 import { Badge } from '@microsoft/fast-foundation';
 import { BaseProgress } from '@microsoft/fast-foundation';
 import { Breadcrumb } from '@microsoft/fast-foundation';
@@ -212,6 +213,9 @@ export type AnchorAppearance = ButtonAppearance | "hypertext";
 export const AnchorStyles: import("@microsoft/fast-element").ElementStyles;
 
 // @public
+export const AvatarStyles: import("@microsoft/fast-element").ElementStyles;
+
+// @public
 export const BadgeStyles: import("@microsoft/fast-element").ElementStyles;
 
 // @public
@@ -250,6 +254,10 @@ export class FASTAnchor extends Anchor {
     appearanceChanged(oldValue: AnchorAppearance, newValue: AnchorAppearance): void;
     // (undocumented)
     connectedCallback(): void;
+}
+
+// @public
+export class FASTAvatar extends Avatar {
 }
 
 // @public
