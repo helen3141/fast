@@ -1,7 +1,8 @@
 import { attr, DOM, FASTElement, observable } from "@microsoft/fast-element";
 import { Direction, keyCodeEscape } from "@microsoft/fast-web-utilities";
 import { AnchoredRegion, AxisPositioningMode, AxisScalingMode } from "../anchored-region";
-import { getDirection } from "../utilities";
+import { ARIAGlobalStatesAndProperties } from "../patterns";
+import { applyMixins, getDirection } from "../utilities";
 import { PopoverPosition } from "./popover.options";
 
 export { PopoverPosition };
@@ -332,8 +333,6 @@ export class Popover extends FASTElement {
 
             case PopoverPosition.right:
             case PopoverPosition.left:
-            case PopoverPosition.start:
-            case PopoverPosition.end:
                 this.verticalPositioningMode = "dynamic";
                 this.horizontalPositioningMode = "locktodefault";
                 this.verticalDefaultPosition = undefined;
@@ -439,3 +438,13 @@ export class Popover extends FASTElement {
         (this.region as any).addEventListener("change", this.handlePositionChange);
     };
 }
+
+/**
+ * Mark internal because exporting class and interface of the same name
+ * confuses API documenter.
+ * TODO: https://github.com/microsoft/fast/issues/3317
+ * @internal
+ */
+/* eslint-disable-next-line */
+export interface Popover extends ARIAGlobalStatesAndProperties {}
+applyMixins(Popover, ARIAGlobalStatesAndProperties);
