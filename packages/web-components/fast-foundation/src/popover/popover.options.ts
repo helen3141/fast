@@ -5,32 +5,34 @@
  */
 export enum PopoverPosition {
     /**
-     * The popover is positioned above the element
+     * The popover positions above the element
      */
     top = "top",
+    topLeft = "top-left-corner",
+    topRight = "top-right-corner",
+    topLeftAligned = "top-left-aligned",
+    topRightAligned = "top-right-aligned",
 
     /**
-     * The popover is positioned to the right of the element
+     * The popover positions to the right of the element
      */
     right = "right",
+    rightTopAligned = "right-top-aligned",
+    rightBottomAligned = "right-bottom-aligned",
 
     /**
-     * The popover is positioned below the element
+     * The popover positions below the element
      */
     bottom = "bottom",
+    bottomLeft = "bottom-left-corner",
+    bottomRight = "bottom-right-corner",
+    bottomLeftAligned = "bottom-left-aligned",
+    bottomRightAligned = "bottom-right-aligned",
 
     /**
-     * The popover is positioned to the left of the element
+     * The popover positions to the left of the element
      */
     left = "left",
-
-    /**
-     * The popover is positioned before the element
-     */
-    start = "start",
-
-    /**
-     * The popover is positioned after the element
-     */
-    end = "end",
+    leftTopAligned = "left-top-aligned",
+    leftBottomAligned = "left-bottom-aligned",
 }

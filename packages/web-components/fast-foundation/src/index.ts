@@ -20,6 +20,7 @@ export * from "./menu-item/index";
 export * from "./patterns/index";
 export * from "./progress/index";
 export * from "./progress-ring/index";
+export * from "./popover/index";
 export * from "./radio/index";
 export * from "./radio-group/index";
 export * from "./select/index";

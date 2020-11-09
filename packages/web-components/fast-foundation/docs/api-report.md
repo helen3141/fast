@@ -748,6 +748,64 @@ export const MenuItemTemplate: import("@microsoft/fast-element").ViewTemplate<Me
 export const MenuTemplate: import("@microsoft/fast-element").ViewTemplate<Menu, any>;
 
 // @public
+export class Popover extends FASTElement {
+    anchor: string;
+    anchorElement: HTMLElement | null;
+    // (undocumented)
+    connectedCallback(): void;
+    // @internal
+    currentDirection: Direction;
+    delay: number;
+    // (undocumented)
+    disconnectedCallback(): void;
+    // @internal
+    handlePositionChange: (ev: Event) => void;
+    // @internal (undocumented)
+    horizontalDefaultPosition: string | undefined;
+    // @internal (undocumented)
+    horizontalInset: string;
+    // @internal (undocumented)
+    horizontalPositioningMode: AxisPositioningMode;
+    // Warning: (ae-forgotten-export) The symbol "AxisScalingMode" needs to be exported by the entry point index.d.ts
+    //
+    // @internal (undocumented)
+    horizontalScaling: AxisScalingMode;
+    // @internal (undocumented)
+    popoverVisible: boolean;
+    position: PopoverPosition;
+    // Warning: (ae-forgotten-export) The symbol "AnchoredRegion" needs to be exported by the entry point index.d.ts
+    //
+    // @internal
+    region: AnchoredRegion;
+    // @internal (undocumented)
+    verticalDefaultPosition: string | undefined;
+    // @internal (undocumented)
+    verticalInset: string;
+    // Warning: (ae-forgotten-export) The symbol "AxisPositioningMode" needs to be exported by the entry point index.d.ts
+    //
+    // @internal (undocumented)
+    verticalPositioningMode: AxisPositioningMode;
+    // @internal (undocumented)
+    verticalScaling: AxisScalingMode;
+    // @internal
+    viewportElement: HTMLElement | null;
+    visible: boolean;
+    }
+
+// @public
+export enum PopoverPosition {
+    bottom = "bottom",
+    end = "end",
+    left = "left",
+    right = "right",
+    start = "start",
+    top = "top"
+}
+
+// @public
+export const PopoverTemplate: import("@microsoft/fast-element").ViewTemplate<Popover, any>;
+
+// @public
 export const ProgressRingTemplate: import("@microsoft/fast-element").ViewTemplate<BaseProgress, any>;
 
 // @public
@@ -1210,13 +1268,9 @@ export class Tooltip extends FASTElement {
     horizontalInset: string;
     // @internal (undocumented)
     horizontalPositioningMode: AxisPositioningMode;
-    // Warning: (ae-forgotten-export) The symbol "AxisScalingMode" needs to be exported by the entry point index.d.ts
-    //
     // @internal (undocumented)
     horizontalScaling: AxisScalingMode;
     position: TooltipPosition;
-    // Warning: (ae-forgotten-export) The symbol "AnchoredRegion" needs to be exported by the entry point index.d.ts
-    //
     // @internal
     region: AnchoredRegion;
     // @internal (undocumented)
@@ -1225,8 +1279,6 @@ export class Tooltip extends FASTElement {
     verticalDefaultPosition: string | undefined;
     // @internal (undocumented)
     verticalInset: string;
-    // Warning: (ae-forgotten-export) The symbol "AxisPositioningMode" needs to be exported by the entry point index.d.ts
-    //
     // @internal (undocumented)
     verticalPositioningMode: AxisPositioningMode;
     // @internal (undocumented)
