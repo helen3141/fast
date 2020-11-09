@@ -747,10 +747,11 @@ export const MenuItemTemplate: import("@microsoft/fast-element").ViewTemplate<Me
 // @public
 export const MenuTemplate: import("@microsoft/fast-element").ViewTemplate<Menu, any>;
 
+// Warning: (ae-different-release-tags) This symbol has another declaration with a different release tag
+// Warning: (ae-internal-mixed-release-tag) Mixed release tags are not allowed for "Popover" because one of its declarations is marked as @internal
+//
 // @public
 export class Popover extends FASTElement {
-    anchor: string;
-    anchorElement: HTMLElement | null;
     // (undocumented)
     connectedCallback(): void;
     // @internal
@@ -777,6 +778,8 @@ export class Popover extends FASTElement {
     //
     // @internal
     region: AnchoredRegion;
+    target: string;
+    targetElement: HTMLElement | null;
     // @internal (undocumented)
     verticalDefaultPosition: string | undefined;
     // @internal (undocumented)
@@ -792,14 +795,40 @@ export class Popover extends FASTElement {
     visible: boolean;
     }
 
+// @internal
+export interface Popover extends ARIAGlobalStatesAndProperties {
+}
+
 // @public
 export enum PopoverPosition {
     bottom = "bottom",
-    end = "end",
+    // (undocumented)
+    bottomLeft = "bottom-left-corner",
+    // (undocumented)
+    bottomLeftAligned = "bottom-left-aligned",
+    // (undocumented)
+    bottomRight = "bottom-right-corner",
+    // (undocumented)
+    bottomRightAligned = "bottom-right-aligned",
     left = "left",
+    // (undocumented)
+    leftBottomAligned = "left-bottom-aligned",
+    // (undocumented)
+    leftTopAligned = "left-top-aligned",
     right = "right",
-    start = "start",
-    top = "top"
+    // (undocumented)
+    rightBottomAligned = "right-bottom-aligned",
+    // (undocumented)
+    rightTopAligned = "right-top-aligned",
+    top = "top",
+    // (undocumented)
+    topLeft = "top-left-corner",
+    // (undocumented)
+    topLeftAligned = "top-left-aligned",
+    // (undocumented)
+    topRight = "top-right-corner",
+    // (undocumented)
+    topRightAligned = "top-right-aligned"
 }
 
 // @public
