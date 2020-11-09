@@ -5,6 +5,11 @@ import { ARIAGlobalStatesAndProperties } from "../patterns";
 import { applyMixins, getDirection } from "../utilities";
 import { PopoverPosition } from "./popover.options";
 
+// TODO: ADD focus trap
+// TODO: FIX styling
+// TODO: UPDATE placement logic switch
+// TODO: ASK do we want to be prescriptive and have a header, footer, and close button already? Maybe an option for a close button? Or should this be more like Dialog where we don't control anything inside the popover
+
 export { PopoverPosition };
 
 /**
@@ -17,9 +22,8 @@ export class Popover extends FASTElement {
 
     /**
      * Whether the popover is visible or not.
-     * If undefined popover is shown when anchor element is hovered
      *
-     * @defaultValue - undefined
+     * @defaultValue - false // TODO: ADD to connectedCallback
      * @public
      * HTML Attribute: visible
      */
@@ -48,7 +52,7 @@ export class Popover extends FASTElement {
     }
 
     /**
-     * The delay in milliseconds before a popover is shown after a hover event
+     * The delay in milliseconds before a popover is shown after a trigger event
      *
      * @defaultValue - 300
      * @public
@@ -84,33 +88,13 @@ export class Popover extends FASTElement {
     private targetElementChanged(oldValue: HTMLElement | null): void {
         if ((this as FASTElement).$fastController.isConnected) {
             if (oldValue !== null && oldValue !== undefined) {
-                oldValue.removeEventListener("mouseover", this.handleTargetMouseOver);
-                oldValue.removeEventListener("mouseout", this.handleTargetMouseOut);
+                oldValue.removeEventListener("click", this.handleTargetClick);
             }
 
             if (this.targetElement !== null && this.targetElement !== undefined) {
-                this.targetElement.addEventListener(
-                    "mouseover",
-                    this.handleTargetMouseOver,
-                    { passive: true }
-                );
-                this.targetElement.addEventListener(
-                    "mouseout",
-                    this.handleTargetMouseOut,
-                    { passive: true }
-                );
-
-                const anchorId: string = this.targetElement.id;
-
-                if (this.targetElement.parentElement !== null) {
-                    this.targetElement.parentElement
-                        .querySelectorAll(":hover")
-                        .forEach(element => {
-                            if (element.id === anchorId) {
-                                this.startHoverTimer();
-                            }
-                        });
-                }
+                this.targetElement.addEventListener("click", this.handleTargetClick, {
+                    passive: true,
+                });
             }
 
             if (
@@ -217,11 +201,15 @@ export class Popover extends FASTElement {
     /**
      * Indicates whether the anchor is currently being hovered
      */
-    private isAnchorHovered: boolean = false;
+    private isTargetHovered: boolean = false;
 
     public connectedCallback(): void {
         super.connectedCallback();
-        this.targetElement = this.getAnchor();
+        if (!this.visible) {
+            this.visible = false;
+        }
+
+        this.targetElement = this.getTarget();
 
         this.updateLayout();
         this.updatePopoverVisibility();
@@ -229,7 +217,6 @@ export class Popover extends FASTElement {
 
     public disconnectedCallback(): void {
         this.hidePopover();
-        this.clearDelayTimer();
         super.disconnectedCallback();
     }
 
@@ -238,7 +225,7 @@ export class Popover extends FASTElement {
      *
      * @internal
      */
-    public handlePositionChange = (ev: Event): void => {
+    public handlePositionChange = (e: Event): void => {
         this.classList.toggle("top", this.region.verticalPosition === "top");
         this.classList.toggle("bottom", this.region.verticalPosition === "bottom");
         this.classList.toggle("inset-top", this.region.verticalPosition === "insetTop");
@@ -260,57 +247,28 @@ export class Popover extends FASTElement {
     };
 
     /**
-     * mouse enters anchor
+     * click on the target
      */
-    private handleTargetMouseOver = (ev: Event): void => {
-        this.startHoverTimer();
-    };
-
-    /**
-     * mouse leaves anchor
-     */
-    private handleTargetMouseOut = (ev: Event): void => {
-        if (this.isAnchorHovered) {
-            this.isAnchorHovered = false;
-            this.updatePopoverVisibility();
+    private handleTargetClick = (e: Event): void => {
+        if (this.popoverVisible) {
+            this.hidePopover();
+        } else {
+            this.showPopover();
         }
-        this.clearDelayTimer();
     };
 
     /**
-     * starts the hover timer if not currently running
+     * handle click on the body for soft-dismiss
      */
-    private startHoverTimer = (): void => {
-        if (this.isAnchorHovered) {
-            return;
-        }
-
-        if (this.delay > 1) {
-            if (this.delayTimer === null)
-                this.delayTimer = window.setTimeout((): void => {
-                    this.startHover();
-                }, this.delay);
-            return;
-        }
-
-        this.startHover();
-    };
-
-    /**
-     * starts the hover delay timer
-     */
-    private startHover = (): void => {
-        this.isAnchorHovered = true;
-        this.updatePopoverVisibility();
-    };
-
-    /**
-     * clears the hover delay
-     */
-    private clearDelayTimer = (): void => {
-        if (this.delayTimer !== null) {
-            clearTimeout(this.delayTimer);
-            this.delayTimer = null;
+    private handleDocumentClick = (e: Event): void => {
+        console.log("doc click: ", e.target, e.currentTarget);
+        if (
+            this.popoverVisible &&
+            e.target !== this &&
+            !this.contains(e.target as Node) &&
+            e.target !== this.targetElement
+        ) {
+            this.hidePopover();
         }
     };
 
@@ -359,7 +317,7 @@ export class Popover extends FASTElement {
     /**
      *  Gets the anchor element by id
      */
-    private getAnchor = (): HTMLElement | null => {
+    private getTarget = (): HTMLElement | null => {
         return document.getElementById(this.target);
     };
 
@@ -370,7 +328,7 @@ export class Popover extends FASTElement {
         if (!e.defaultPrevented && this.popoverVisible) {
             switch (e.keyCode) {
                 case keyCodeEscape:
-                    this.isAnchorHovered = false;
+                    this.popoverVisible = false;
                     this.updatePopoverVisibility();
                     this.$emit("dismiss");
                     break;
@@ -387,7 +345,7 @@ export class Popover extends FASTElement {
         } else if (this.visible === true) {
             this.showPopover();
         } else {
-            if (this.isAnchorHovered) {
+            if (this.popoverVisible) {
                 this.showPopover();
                 return;
             }
@@ -405,6 +363,7 @@ export class Popover extends FASTElement {
         this.currentDirection = getDirection(this);
         this.popoverVisible = true;
         document.addEventListener("keydown", this.handleDocumentKeydown);
+        document.addEventListener("click", this.handleDocumentClick);
         DOM.queueUpdate(this.setRegionProps);
     };
 
@@ -421,6 +380,7 @@ export class Popover extends FASTElement {
             this.region.anchorElement = null;
         }
         document.removeEventListener("keydown", this.handleDocumentKeydown);
+        document.removeEventListener("click", this.handleDocumentClick);
         this.popoverVisible = false;
     };
 
