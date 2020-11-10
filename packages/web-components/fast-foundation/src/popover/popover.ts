@@ -7,8 +7,8 @@ import { PopoverPosition } from "./popover.options";
 
 // TODO: ADD focus trap
 // TODO: FIX styling
-// TODO: UPDATE placement logic switch
-// TODO: ASK do we want to be prescriptive and have a header, footer, and close button already? Maybe an option for a close button? Or should this be more like Dialog where we don't control anything inside the popover
+// TODO: UPDATE position logic switch
+// DONE: ASK do we want to be prescriptive and have a header, footer, and close button already? Maybe an option for a close button? Or should this be more like Dialog where we don't control anything inside the popover. Answer = No.
 
 export { PopoverPosition };
 
@@ -340,6 +340,7 @@ export class Popover extends FASTElement {
      * determines whether to show or hide the popover based on current state
      */
     private updatePopoverVisibility = (): void => {
+        console.log(this.visible);
         if (this.visible === false) {
             this.hidePopover();
         } else if (this.visible === true) {
