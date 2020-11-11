@@ -28,7 +28,7 @@
 
     <h2>Default</h2>
     <div class="container">
-        <fast-popover visible target="target-default">
+        <fast-popover target="target-default">
             <fast-card>
                 Popover Content
             </fast-card>
@@ -41,12 +41,13 @@
 
     <h2>Default w/ Width & Height</h2>
     <div class="container">
-        <fast-popover target="target-sized">
+        <fast-popover target="target-sized" id="myPopover">
             <fast-card class="sized-card card-styled">
                 <fast-button
                     autofocus
                     appearance="stealth"
                     style="align-self: flex-end; justify-self: flex-start;"
+                    onclick="document.querySelector('#myPopover').visible = false;"
                 >
                     X
                 </fast-button>
@@ -54,7 +55,11 @@
             </fast-card>
         </fast-popover>
 
-        <fast-button id="target-sized" style="margin: 200px;">
+        <fast-button
+            id="target-sized"
+            style="margin: 200px;"
+            onclick="(e) => e.stopPropagation(); document.body.querySelector('#myPopover').visible = !(document.body.querySelector('#myPopover').visible)"
+        >
             target
         </fast-button>
     </div>

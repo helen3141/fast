@@ -23,13 +23,14 @@ export class Popover extends FASTElement {
     /**
      * Whether the popover is visible or not.
      *
-     * @defaultValue - false // TODO: ADD to connectedCallback
+     * @defaultValue - false
      * @public
      * HTML Attribute: visible
      */
     @attr({ mode: "boolean" })
     public visible: boolean;
     private visibleChanged(): void {
+        console.log("HIT VISIBLE CHANGED: ", this.visible);
         if ((this as FASTElement).$fastController.isConnected) {
             this.updatePopoverVisibility();
             this.updateLayout();
@@ -87,15 +88,15 @@ export class Popover extends FASTElement {
     public targetElement: HTMLElement | null = null;
     private targetElementChanged(oldValue: HTMLElement | null): void {
         if ((this as FASTElement).$fastController.isConnected) {
-            if (oldValue !== null && oldValue !== undefined) {
-                oldValue.removeEventListener("click", this.handleTargetClick);
-            }
+            // if (oldValue !== null && oldValue !== undefined) {
+            //     // oldValue.removeEventListener("click", this.handleTargetClick);
+            // }
 
-            if (this.targetElement !== null && this.targetElement !== undefined) {
-                this.targetElement.addEventListener("click", this.handleTargetClick, {
-                    passive: true,
-                });
-            }
+            // if (this.targetElement !== null && this.targetElement !== undefined) {
+            //     this.targetElement.addEventListener("click", this.handleTargetClick, {
+            //         passive: true,
+            //     });
+            // }
 
             if (
                 this.region !== null &&
@@ -198,11 +199,6 @@ export class Popover extends FASTElement {
      */
     private delayTimer: number | null = null;
 
-    /**
-     * Indicates whether the anchor is currently being hovered
-     */
-    private isTargetHovered: boolean = false;
-
     public connectedCallback(): void {
         super.connectedCallback();
         if (!this.visible) {
@@ -249,26 +245,34 @@ export class Popover extends FASTElement {
     /**
      * click on the target
      */
-    private handleTargetClick = (e: Event): void => {
-        if (this.popoverVisible) {
-            this.hidePopover();
-        } else {
-            this.showPopover();
-        }
-    };
+    // private handleTargetClick = (e: Event): void => {
+    //     console.log("hit target click: ", this.visible, this.popoverVisible)
+    //     if(this.visible && !this.popoverVisible){
+    //         this.popoverVisible = false;
+    //     }
+    //     if (this.popoverVisible) {
+    //         this.hidePopover();
+    //     } else {
+    //         this.showPopover();
+    //     }
+    // };
 
     /**
      * handle click on the body for soft-dismiss
      */
     private handleDocumentClick = (e: Event): void => {
         console.log("doc click: ", e.target, e.currentTarget);
+        console.log(this.visible, this.popoverVisible);
         if (
             this.popoverVisible &&
             e.target !== this &&
             !this.contains(e.target as Node) &&
             e.target !== this.targetElement
         ) {
-            this.hidePopover();
+            console.log("doc click passed: ", e.target, e.currentTarget);
+            // this.hidePopover();
+            this.visible = false;
+            this.popoverVisible = false;
         }
     };
 
@@ -329,7 +333,8 @@ export class Popover extends FASTElement {
             switch (e.keyCode) {
                 case keyCodeEscape:
                     this.popoverVisible = false;
-                    this.updatePopoverVisibility();
+                    this.visible = false;
+                    // this.updatePopoverVisibility();
                     this.$emit("dismiss");
                     break;
             }
@@ -340,7 +345,7 @@ export class Popover extends FASTElement {
      * determines whether to show or hide the popover based on current state
      */
     private updatePopoverVisibility = (): void => {
-        console.log(this.visible);
+        console.log("HIT Update POPOVER VIS: ", this.visible);
         if (this.visible === false) {
             this.hidePopover();
         } else if (this.visible === true) {
@@ -358,13 +363,14 @@ export class Popover extends FASTElement {
      * shows the popover
      */
     private showPopover = (): void => {
+        console.log("HIT SHOW: ", this.visible, this.popoverVisible);
         if (this.popoverVisible) {
             return;
         }
         this.currentDirection = getDirection(this);
-        this.popoverVisible = true;
         document.addEventListener("keydown", this.handleDocumentKeydown);
         document.addEventListener("click", this.handleDocumentClick);
+        this.popoverVisible = true;
         DOM.queueUpdate(this.setRegionProps);
     };
 
@@ -372,6 +378,7 @@ export class Popover extends FASTElement {
      * hides the popover
      */
     private hidePopover = (): void => {
+        console.log("HIT HIDE: ", this.visible, this.popoverVisible);
         if (!this.popoverVisible) {
             return;
         }
