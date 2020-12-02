@@ -760,7 +760,7 @@ export class Popover extends FASTElement {
     // (undocumented)
     disconnectedCallback(): void;
     // @internal
-    handlePositionChange: (ev: Event) => void;
+    handlePositionChange: (e: Event) => void;
     // @internal (undocumented)
     horizontalDefaultPosition: string | undefined;
     // @internal (undocumented)
@@ -772,11 +772,13 @@ export class Popover extends FASTElement {
     // @internal (undocumented)
     horizontalScaling: AxisScalingMode;
     // @internal (undocumented)
+    popover: HTMLDivElement;
+    // @internal (undocumented)
     popoverVisible: boolean;
     position: PopoverPosition;
     // Warning: (ae-forgotten-export) The symbol "AnchoredRegion" needs to be exported by the entry point index.d.ts
     //
-    // @internal
+    // @internal (undocumented)
     region: AnchoredRegion;
     target: string;
     targetElement: HTMLElement | null;

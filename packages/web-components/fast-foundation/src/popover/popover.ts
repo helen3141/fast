@@ -1,5 +1,6 @@
 import { attr, DOM, FASTElement, observable } from "@microsoft/fast-element";
-import { Direction, keyCodeEscape } from "@microsoft/fast-web-utilities";
+import { Direction, keyCodeEscape, keyCodeTab } from "@microsoft/fast-web-utilities";
+import tabbable from "tabbable";
 import { AnchoredRegion, AxisPositioningMode, AxisScalingMode } from "../anchored-region";
 import { ARIAGlobalStatesAndProperties } from "../patterns";
 import { applyMixins, getDirection } from "../utilities";
@@ -30,7 +31,6 @@ export class Popover extends FASTElement {
     @attr({ mode: "boolean" })
     public visible: boolean;
     private visibleChanged(): void {
-        console.log("HIT VISIBLE CHANGED: ", this.visible);
         if ((this as FASTElement).$fastController.isConnected) {
             this.updatePopoverVisibility();
             this.updateLayout();
@@ -188,19 +188,30 @@ export class Popover extends FASTElement {
     public currentDirection: Direction = Direction.ltr;
 
     /**
-     * reference to the anchored region
-     *
      * @internal
      */
     public region: AnchoredRegion;
+
+    /**
+     * @internal
+     */
+    public popover: HTMLDivElement;
 
     /**
      * The timer that tracks delay time before the popover is shown on hover
      */
     private delayTimer: number | null = null;
 
+    private tabbableElements: HTMLElement[];
+
+    private observer: MutationObserver;
+
     public connectedCallback(): void {
         super.connectedCallback();
+        this.observer = new MutationObserver(this.onChildListChange);
+        // only observe if nodes are added or removed
+        this.observer.observe(this as Element, { childList: true });
+
         if (!this.visible) {
             this.visible = false;
         }
@@ -214,6 +225,7 @@ export class Popover extends FASTElement {
     public disconnectedCallback(): void {
         this.hidePopover();
         super.disconnectedCallback();
+        this.observer.disconnect();
     }
 
     /**
@@ -240,13 +252,13 @@ export class Popover extends FASTElement {
             "inset-right",
             this.region.horizontalPosition === "insetRight"
         );
+        DOM.queueUpdate(this.trapFocus);
     };
 
     /**
      * click on the target
      */
     // private handleTargetClick = (e: Event): void => {
-    //     console.log("hit target click: ", this.visible, this.popoverVisible)
     //     if(this.visible && !this.popoverVisible){
     //         this.popoverVisible = false;
     //     }
@@ -261,15 +273,12 @@ export class Popover extends FASTElement {
      * handle click on the body for soft-dismiss
      */
     private handleDocumentClick = (e: Event): void => {
-        console.log("doc click: ", e.target, e.currentTarget);
-        console.log(this.visible, this.popoverVisible);
         if (
             this.popoverVisible &&
             e.target !== this &&
             !this.contains(e.target as Node) &&
             e.target !== this.targetElement
         ) {
-            console.log("doc click passed: ", e.target, e.currentTarget);
             // this.hidePopover();
             this.visible = false;
             this.popoverVisible = false;
@@ -337,6 +346,19 @@ export class Popover extends FASTElement {
                     // this.updatePopoverVisibility();
                     this.$emit("dismiss");
                     break;
+                case keyCodeTab:
+                    if (e.shiftKey && e.target === this.tabbableElements[0]) {
+                        this.tabbableElements[this.tabbableElements.length - 1].focus();
+                        e.preventDefault();
+                    } else if (
+                        !e.shiftKey &&
+                        e.target ===
+                            this.tabbableElements[this.tabbableElements.length - 1]
+                    ) {
+                        this.tabbableElements[0].focus();
+                        e.preventDefault();
+                    }
+                    break;
             }
         }
     };
@@ -345,7 +367,7 @@ export class Popover extends FASTElement {
      * determines whether to show or hide the popover based on current state
      */
     private updatePopoverVisibility = (): void => {
-        console.log("HIT Update POPOVER VIS: ", this.visible);
+        console.log(this.visible, this.popoverVisible);
         if (this.visible === false) {
             this.hidePopover();
         } else if (this.visible === true) {
@@ -363,13 +385,14 @@ export class Popover extends FASTElement {
      * shows the popover
      */
     private showPopover = (): void => {
-        console.log("HIT SHOW: ", this.visible, this.popoverVisible);
+        console.log(this.visible, this.popoverVisible);
         if (this.popoverVisible) {
             return;
         }
         this.currentDirection = getDirection(this);
         document.addEventListener("keydown", this.handleDocumentKeydown);
         document.addEventListener("click", this.handleDocumentClick);
+
         this.popoverVisible = true;
         DOM.queueUpdate(this.setRegionProps);
     };
@@ -378,7 +401,6 @@ export class Popover extends FASTElement {
      * hides the popover
      */
     private hidePopover = (): void => {
-        console.log("HIT HIDE: ", this.visible, this.popoverVisible);
         if (!this.popoverVisible) {
             return;
         }
@@ -404,7 +426,61 @@ export class Popover extends FASTElement {
         this.region.viewportElement = this.viewportElement;
         this.region.anchorElement = this.targetElement;
         (this.region as any).addEventListener("change", this.handlePositionChange);
+        console.log("region: ", this.region);
     };
+
+    /**
+     * trap focus in popover
+     */
+    private trapFocus = (): void => {
+        console.log(this);
+        console.log(
+            this.querySelectorAll(
+                "input, select, textarea, a[href], button, [tabindex], audio[controls], video[controls], [contenteditable]:not([contenteditable='false']), details>summary:first-of-type, details"
+            )
+        );
+
+        this.tabbableElements = tabbable(this as Element, { includeContainer: true });
+        console.log(this.tabbableElements);
+        if (this.tabbableElements.length === 0) {
+            console.log(this.popover, document.activeElement);
+            this.popover.focus();
+            return;
+        }
+        if (this.tabbableElements.length) {
+            if (this.shouldForceFocus(document.activeElement)) {
+                this.focusFirstElement();
+            }
+        }
+    };
+
+    /**
+     * focus on first element of tab queue
+     */
+    private focusFirstElement = (): void => {
+        if (this.tabbableElements.length === 0) {
+            this.popover.focus();
+        } else {
+            this.tabbableElements[0].focus();
+        }
+    };
+
+    /**
+     * we should only focus if focus has not already been brought to the dialog
+     */
+    private shouldForceFocus = (currentFocusElement: Element | null): boolean => {
+        return !this.hidden && !this.contains(currentFocusElement);
+    };
+
+    private onChildListChange(
+        mutations: MutationRecord[],
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+        observer: MutationObserver
+    ): void {
+        if (mutations!.length) {
+            this.tabbableElements = tabbable(this as Element);
+        }
+    }
 }
 
 /**

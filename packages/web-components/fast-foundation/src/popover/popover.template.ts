@@ -21,7 +21,13 @@ export const PopoverTemplate = html<Popover>`
                 dir="${x => x.currentDirection}"
                 ${ref("region")}
             >
-                <div class="popover" part="popover" role="dialog">
+                <div
+                    class="popover"
+                    part="popover"
+                    role="dialog"
+                    ${ref("popover")}
+                    tabindex="0"
+                >
                     <slot></slot>
                 </div>
             </fast-anchored-region>
