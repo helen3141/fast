@@ -9,7 +9,9 @@ import { PopoverPosition } from "./popover.options";
 // TODO: ADD focus trap
 // TODO: FIX styling
 // TODO: UPDATE position logic switch
-// DONE: ASK do we want to be prescriptive and have a header, footer, and close button already? Maybe an option for a close button? Or should this be more like Dialog where we don't control anything inside the popover. Answer = No.
+// TODO: ASK Do we want trapFocus to always be true???
+// TODO: Hook in to new loaded emitted event from anchoredRegion for trapFocus
+// TODO: Bring focus back to target after popover is closed
 
 export { PopoverPosition };
 
@@ -343,7 +345,8 @@ export class Popover extends FASTElement {
                 case keyCodeEscape:
                     this.popoverVisible = false;
                     this.visible = false;
-                    // this.updatePopoverVisibility();
+                    this.refocusOnTarget();
+                    this.targetElement?.focus();
                     this.$emit("dismiss");
                     break;
                 case keyCodeTab:
@@ -463,6 +466,13 @@ export class Popover extends FASTElement {
         } else {
             this.tabbableElements[0].focus();
         }
+    };
+
+    /**
+     * Focus helper to take focus back to target once the popover is closed
+     */
+    private refocusOnTarget = () => {
+        this.targetElement?.focus();
     };
 
     /**

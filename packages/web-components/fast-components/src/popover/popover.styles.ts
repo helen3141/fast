@@ -41,10 +41,6 @@ export const PopoverStyles = css`
         z-index: 10000;
     }
 
-    .popover:focus {
-        outline: 1px solid green;
-    }
-
     fast-anchored-region {
         display: flex;
         justify-content: center;

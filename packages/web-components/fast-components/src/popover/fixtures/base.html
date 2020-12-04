@@ -29,9 +29,10 @@
     <!-- <h2>Default</h2>
     <div class="container">
         <fast-popover target="target-default" id="myPopover">
-            <fast-card tabindex="0">
+            <fast-card>
                 Popover Content
             </fast-card>
+            <div> test div </div>
         </fast-popover>
 
         <fast-button
@@ -42,6 +43,23 @@
             target
         </fast-button>
     </div> -->
+
+    <h2>Always Visible</h2>
+    <div class="container">
+        <fast-popover visible target="target-default" id="myPopoverOne">
+            <fast-card>
+                Popover Content
+            </fast-card>
+        </fast-popover>
+
+        <fast-button
+            id="target-default"
+            style="margin: 200px;"
+            onclick="(e) => e.stopPropagation();document.body.querySelector('#myPopoverOne').visible = !(document.body.querySelector('#myPopoverOne').visible)"
+        >
+            target
+        </fast-button>
+    </div>
 
     <h2>Default w/ Width & Height</h2>
     <div class="container">
