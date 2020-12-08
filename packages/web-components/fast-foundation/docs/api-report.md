@@ -71,6 +71,42 @@ export class Anchor extends FASTElement {
 export interface Anchor extends StartEnd, DelegatesARIALink {
 }
 
+// @public (undocumented)
+export class AnchoredRegion extends FASTElement {
+    // @internal (undocumented)
+    adoptedCallback(): void;
+    anchor: string;
+    anchorElement: HTMLElement | null;
+    // @internal (undocumented)
+    connectedCallback(): void;
+    // @internal (undocumented)
+    disconnectedCallback(): void;
+    fixedPlacement: boolean;
+    horizontalDefaultPosition: HorizontalPosition;
+    horizontalInset: boolean;
+    // Warning: (ae-forgotten-export) The symbol "AnchoredRegionHorizontalPositionLabel" needs to be exported by the entry point index.d.ts
+    horizontalPosition: AnchoredRegionHorizontalPositionLabel;
+    horizontalPositioningMode: AxisPositioningMode;
+    horizontalScaling: AxisScalingMode;
+    horizontalThreshold: string;
+    // @internal
+    initialLayoutComplete: boolean;
+    update: () => void;
+    updateAnchorOffset: (horizontalOffsetDelta: number, verticalOffsetDelta: number) => void;
+    verticalDefaultPosition: VerticalPosition;
+    verticalInset: boolean;
+    // Warning: (ae-forgotten-export) The symbol "AnchoredRegionVerticalPositionLabel" needs to be exported by the entry point index.d.ts
+    verticalPosition: AnchoredRegionVerticalPositionLabel;
+    verticalPositioningMode: AxisPositioningMode;
+    verticalScaling: AxisScalingMode;
+    verticalThreshold: string;
+    viewport: string;
+    viewportElement: HTMLElement | null;
+    }
+
+// @public (undocumented)
+export const AnchoredRegionTemplate: import("@microsoft/fast-element").ViewTemplate<AnchoredRegion, any>;
+
 // @public
 export const AnchorTemplate: import("@microsoft/fast-element").ViewTemplate<Anchor, any>;
 
@@ -98,6 +134,26 @@ export class ARIAGlobalStatesAndProperties {
     ariaOwns: string;
     ariaRelevant: "additions" | "additions text" | "all" | "removals" | "text";
     ariaRoledescription: string;
+}
+
+// @public (undocumented)
+export enum AxisPositioningMode {
+    // (undocumented)
+    dynamic = "dynamic",
+    // (undocumented)
+    locktodefault = "locktodefault",
+    // (undocumented)
+    uncontrolled = "uncontrolled"
+}
+
+// @public (undocumented)
+export enum AxisScalingMode {
+    // (undocumented)
+    anchor = "anchor",
+    // (undocumented)
+    content = "content",
+    // (undocumented)
+    fill = "fill"
 }
 
 // @public
@@ -430,6 +486,14 @@ export class Dialog extends FASTElement {
 // @public
 export const DialogTemplate: import("@microsoft/fast-element").ViewTemplate<Dialog, any>;
 
+// @public (undocumented)
+export interface Dimension {
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    width: number;
+}
+
 // @public
 export class DirectionalStyleSheetBehavior implements Behavior {
     constructor(ltr: ElementStyles | null, rtl: ElementStyles | null);
@@ -561,6 +625,20 @@ export const getDirection: (rootNode: HTMLElement) => Direction;
 
 // @public
 export const hidden = ":host([hidden]){display:none}";
+
+// @public (undocumented)
+export enum HorizontalPosition {
+    // (undocumented)
+    end = "end",
+    // (undocumented)
+    left = "left",
+    // (undocumented)
+    right = "right",
+    // (undocumented)
+    start = "start",
+    // (undocumented)
+    unset = "unset"
+}
 
 // @public
 export function isDesignSystemConsumer(element: HTMLElement | DesignSystemConsumer): element is DesignSystemConsumer;
@@ -1210,13 +1288,9 @@ export class Tooltip extends FASTElement {
     horizontalInset: string;
     // @internal (undocumented)
     horizontalPositioningMode: AxisPositioningMode;
-    // Warning: (ae-forgotten-export) The symbol "AxisScalingMode" needs to be exported by the entry point index.d.ts
-    //
     // @internal (undocumented)
     horizontalScaling: AxisScalingMode;
     position: TooltipPosition;
-    // Warning: (ae-forgotten-export) The symbol "AnchoredRegion" needs to be exported by the entry point index.d.ts
-    //
     // @internal
     region: AnchoredRegion;
     // @internal (undocumented)
@@ -1225,8 +1299,6 @@ export class Tooltip extends FASTElement {
     verticalDefaultPosition: string | undefined;
     // @internal (undocumented)
     verticalInset: string;
-    // Warning: (ae-forgotten-export) The symbol "AxisPositioningMode" needs to be exported by the entry point index.d.ts
-    //
     // @internal (undocumented)
     verticalPositioningMode: AxisPositioningMode;
     // @internal (undocumented)
@@ -1322,6 +1394,16 @@ export class TreeView extends FASTElement {
 
 // @public
 export const TreeViewTemplate: import("@microsoft/fast-element").ViewTemplate<TreeView, any>;
+
+// @public (undocumented)
+export enum VerticalPosition {
+    // (undocumented)
+    bottom = "bottom",
+    // (undocumented)
+    top = "top",
+    // (undocumented)
+    unset = "unset"
+}
 
 
 // (No @packageDocumentation comment for this package)
