@@ -26,13 +26,13 @@
     </style>
     <h1>Popover</h1>
 
-    <!-- <h2>Default</h2>
+    <h2>Default</h2>
     <div class="container">
         <fast-popover target="target-default" id="myPopover">
             <fast-card>
                 Popover Content
             </fast-card>
-            <div> test div </div>
+            <div>test div</div>
         </fast-popover>
 
         <fast-button
@@ -42,9 +42,38 @@
         >
             target
         </fast-button>
-    </div> -->
+    </div>
 
-    <h2>Always Visible</h2>
+    <h2>With Focusable Items</h2>
+    <div class="container">
+        <fast-popover target="target-focusable" id="myPopoverOne">
+            <fast-button
+                appearance="stealth"
+                style="align-self: flex-end; justify-self: flex-start;"
+                onclick="document.querySelector('#myPopoverOne').visible = false;"
+                tabindex="0"
+            >
+                X
+            </fast-button>
+            <fast-button
+                appearance="stealth"
+                style="align-self: flex-end; justify-self: flex-start;"
+                tabindex="0"
+            >
+                Test Button
+            </fast-button>
+        </fast-popover>
+
+        <fast-button
+            id="target-focusable"
+            style="margin: 200px;"
+            onclick="(e) => e.stopPropagation(); document.body.querySelector('#myPopoverOne').visible = !(document.body.querySelector('#myPopoverOne').visible)"
+        >
+            target
+        </fast-button>
+    </div>
+
+    <!-- <h2>Always Visible</h2>
     <div class="container">
         <fast-popover visible target="target-default" id="myPopoverOne">
             <fast-card>
@@ -59,11 +88,11 @@
         >
             target
         </fast-button>
-    </div>
+    </div> -->
 
-    <h2>Default w/ Width & Height</h2>
+    <h2>With Timer, Buttons, and No Trap Focus</h2>
     <div class="container">
-        <fast-popover target="target-sized" id="myPopoverTwo">
+        <fast-popover target="target-sized" id="myPopoverTwo" trap-focus="false">
             <fast-button
                 appearance="stealth"
                 style="align-self: flex-end; justify-self: flex-start;"
@@ -86,6 +115,40 @@
             id="target-sized"
             style="margin: 200px;"
             onclick="(e) => e.stopPropagation(); document.body.querySelector('#myPopoverTwo').visible = !(document.body.querySelector('#myPopoverTwo').visible)"
+        >
+            target
+        </fast-button>
+    </div>
+
+    <h2>Long Delay</h2>
+    <div class="container">
+        <fast-popover target="long-delay-target" id="myPopoverThree" delay="500">
+            <fast-button
+                appearance="stealth"
+                style="align-self: flex-end; justify-self: flex-start;"
+                onclick="document.querySelector('#myPopoverThree').visible = false;"
+                tabindex="0"
+            >
+                X
+            </fast-button>
+            <fast-button
+                appearance="stealth"
+                style="align-self: flex-end; justify-self: flex-start;"
+                onclick="document.querySelector('#myPopoverThree').visible = false;"
+                tabindex="0"
+            >
+                X
+            </fast-button>
+            <p style="width: 200px; white-space: normal;">
+                500ms. Double clicking the "target" button should only show one popover
+                that is closeable with the "x" button.
+            </p>
+        </fast-popover>
+
+        <fast-button
+            id="long-delay-target"
+            style="margin: 200px;"
+            onclick="(e) => e.stopPropagation(); console.log(document.body.querySelector('#myPopoverThree').visible); document.body.querySelector('#myPopoverThree').visible = !(document.body.querySelector('#myPopoverThree').visible)"
         >
             target
         </fast-button>

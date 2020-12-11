@@ -1,5 +1,10 @@
 import { attr, DOM, FASTElement, observable } from "@microsoft/fast-element";
-import { Direction, keyCodeEscape, keyCodeTab } from "@microsoft/fast-web-utilities";
+import {
+    Direction,
+    keyCodeEscape,
+    keyCodeSpace,
+    keyCodeTab,
+} from "@microsoft/fast-web-utilities";
 import tabbable from "tabbable";
 import { AnchoredRegion, AxisPositioningMode, AxisScalingMode } from "../anchored-region";
 import { ARIAGlobalStatesAndProperties } from "../patterns";
@@ -34,10 +39,23 @@ export class Popover extends FASTElement {
     public visible: boolean;
     private visibleChanged(): void {
         if ((this as FASTElement).$fastController.isConnected) {
+            if (!this.visible && this.isDelayTriggered) {
+                // prevents a double click of target from creating an erroneous state of visible = false, but the popover still shows on the page when delay is used. This occurs when the delay is longer than the double click period.
+                this.visible = true;
+                return;
+            }
             this.updatePopoverVisibility();
             this.updateLayout();
         }
     }
+
+    /**
+     * whether or not the popover will trap focus inside of it when it is open
+     * @defaultValue - true
+     * @public
+     */
+    @attr({ attribute: "trap-focus", mode: "boolean" })
+    public isTrapFocus: boolean;
 
     /**
      * The id of the element the popover uses as a target to be triggered from
@@ -62,7 +80,7 @@ export class Popover extends FASTElement {
      * HTML Attribute: delay
      */
     @attr
-    public delay: number = 300;
+    public delay: number;
 
     /**
      * Controls the placement of the popover relative to the target.
@@ -181,8 +199,13 @@ export class Popover extends FASTElement {
     public popoverVisible: boolean = false;
 
     /**
-     * Track current direction to pass to the anchored region
-     * updated when popover is shown
+     * @internal
+     */
+    @observable
+    public isDelayTriggered: boolean = false;
+
+    /**
+     * Track current direction to pass to the anchored region, updated when popover is shown
      *
      * @internal
      */
@@ -200,7 +223,7 @@ export class Popover extends FASTElement {
     public popover: HTMLDivElement;
 
     /**
-     * The timer that tracks delay time before the popover is shown on hover
+     * The timer that tracks delay time before the popover is shown on target trigger
      */
     private delayTimer: number | null = null;
 
@@ -218,6 +241,14 @@ export class Popover extends FASTElement {
             this.visible = false;
         }
 
+        if (this.isTrapFocus === undefined) {
+            this.isTrapFocus = true;
+        }
+
+        if (this.delayTimer === undefined) {
+            this.delay = 0;
+        }
+
         this.targetElement = this.getTarget();
 
         this.updateLayout();
@@ -226,6 +257,7 @@ export class Popover extends FASTElement {
 
     public disconnectedCallback(): void {
         this.hidePopover();
+        this.clearDelayTimer();
         super.disconnectedCallback();
         this.observer.disconnect();
     }
@@ -267,7 +299,7 @@ export class Popover extends FASTElement {
     //     if (this.popoverVisible) {
     //         this.hidePopover();
     //     } else {
-    //         this.showPopover();
+    //         this.showPopoverTimer();
     //     }
     // };
 
@@ -345,7 +377,6 @@ export class Popover extends FASTElement {
                 case keyCodeEscape:
                     this.popoverVisible = false;
                     this.visible = false;
-                    this.refocusOnTarget();
                     this.targetElement?.focus();
                     this.$emit("dismiss");
                     break;
@@ -362,6 +393,9 @@ export class Popover extends FASTElement {
                         e.preventDefault();
                     }
                     break;
+
+                case keyCodeSpace:
+                    break;
             }
         }
     };
@@ -370,14 +404,13 @@ export class Popover extends FASTElement {
      * determines whether to show or hide the popover based on current state
      */
     private updatePopoverVisibility = (): void => {
-        console.log(this.visible, this.popoverVisible);
         if (this.visible === false) {
             this.hidePopover();
         } else if (this.visible === true) {
-            this.showPopover();
+            this.showPopoverTimer();
         } else {
             if (this.popoverVisible) {
-                this.showPopover();
+                this.showPopoverTimer();
                 return;
             }
             this.hidePopover();
@@ -387,16 +420,29 @@ export class Popover extends FASTElement {
     /**
      * shows the popover
      */
-    private showPopover = (): void => {
-        console.log(this.visible, this.popoverVisible);
+    private showPopoverTimer = (): void => {
         if (this.popoverVisible) {
             return;
         }
+
         this.currentDirection = getDirection(this);
+        if (!this.isDelayTriggered) {
+            if (this.delay > 1) {
+                this.isDelayTriggered = true;
+                this.delayTimer = window.setTimeout((): void => {
+                    this.showPopover();
+                }, this.delay);
+                return;
+            }
+            this.showPopover();
+        }
+    };
+
+    private showPopover = (): void => {
         document.addEventListener("keydown", this.handleDocumentKeydown);
         document.addEventListener("click", this.handleDocumentClick);
-
         this.popoverVisible = true;
+        this.isDelayTriggered = false;
         DOM.queueUpdate(this.setRegionProps);
     };
 
@@ -414,7 +460,9 @@ export class Popover extends FASTElement {
         }
         document.removeEventListener("keydown", this.handleDocumentKeydown);
         document.removeEventListener("click", this.handleDocumentClick);
+        this.refocusOnTarget();
         this.popoverVisible = false;
+        this.clearDelayTimer();
     };
 
     /**
@@ -429,30 +477,22 @@ export class Popover extends FASTElement {
         this.region.viewportElement = this.viewportElement;
         this.region.anchorElement = this.targetElement;
         (this.region as any).addEventListener("change", this.handlePositionChange);
-        console.log("region: ", this.region);
     };
 
     /**
      * trap focus in popover
      */
     private trapFocus = (): void => {
-        console.log(this);
-        console.log(
-            this.querySelectorAll(
-                "input, select, textarea, a[href], button, [tabindex], audio[controls], video[controls], [contenteditable]:not([contenteditable='false']), details>summary:first-of-type, details"
-            )
-        );
-
-        this.tabbableElements = tabbable(this as Element, { includeContainer: true });
-        console.log(this.tabbableElements);
-        if (this.tabbableElements.length === 0) {
-            console.log(this.popover, document.activeElement);
-            this.popover.focus();
-            return;
-        }
-        if (this.tabbableElements.length) {
-            if (this.shouldForceFocus(document.activeElement)) {
-                this.focusFirstElement();
+        if (this.isTrapFocus) {
+            this.tabbableElements = tabbable(this as Element);
+            if (this.tabbableElements.length === 0) {
+                this.popover.focus();
+                return;
+            }
+            if (this.tabbableElements.length) {
+                if (this.shouldForceFocus(document.activeElement)) {
+                    this.focusFirstElement();
+                }
             }
         }
     };
@@ -491,6 +531,13 @@ export class Popover extends FASTElement {
             this.tabbableElements = tabbable(this as Element);
         }
     }
+
+    private clearDelayTimer = (): void => {
+        if (this.delayTimer !== null) {
+            clearTimeout(this.delayTimer);
+            this.delayTimer == null;
+        }
+    };
 }
 
 /**

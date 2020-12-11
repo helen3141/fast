@@ -10,6 +10,7 @@ export const PopoverTemplate = html<Popover>`
         x => x.popoverVisible,
         html<Popover>`
             <fast-anchored-region
+                part="anchored-region"
                 vertical-positioning-mode="${x => x.verticalPositioningMode}"
                 vertical-default-position="${x => x.verticalDefaultPosition}"
                 vertical-inset="${x => x.verticalInset}"
