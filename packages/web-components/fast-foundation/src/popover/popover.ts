@@ -476,7 +476,10 @@ export class Popover extends FASTElement {
         this.viewportElement = document.body;
         this.region.viewportElement = this.viewportElement;
         this.region.anchorElement = this.targetElement;
-        (this.region as any).addEventListener("change", this.handlePositionChange);
+        (this.region as any).addEventListener(
+            "positionchange",
+            this.handlePositionChange
+        );
     };
 
     /**
