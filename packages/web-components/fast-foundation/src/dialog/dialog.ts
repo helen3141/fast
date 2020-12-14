@@ -148,7 +148,6 @@ export class Dialog extends FASTElement {
         if (this.trapFocus) {
             // store references to tabbable elements
             this.tabbableElements = tabbable(this as Element);
-            console.log(this, this.tabbableElements);
 
             // Add an event listener for focusin events if we should be trapping focus
             document.addEventListener("focusin", this.handleDocumentFocus);

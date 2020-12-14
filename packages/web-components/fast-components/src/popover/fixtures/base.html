@@ -39,6 +39,7 @@
             id="target-default"
             style="margin: 200px;"
             onclick="(e) => e.stopPropagation();document.body.querySelector('#myPopover').visible = !(document.body.querySelector('#myPopover').visible)"
+            tabindex="0"
         >
             target
         </fast-button>
@@ -98,8 +99,9 @@
                 style="align-self: flex-end; justify-self: flex-start;"
                 onclick="document.querySelector('#myPopoverTwo').visible = false;"
                 tabindex="0"
+                autofocus
             >
-                X
+                Should autofocus
             </fast-button>
             <fast-button
                 appearance="stealth"
@@ -149,6 +151,47 @@
             id="long-delay-target"
             style="margin: 200px;"
             onclick="(e) => e.stopPropagation(); console.log(document.body.querySelector('#myPopoverThree').visible); document.body.querySelector('#myPopoverThree').visible = !(document.body.querySelector('#myPopoverThree').visible)"
+        >
+            target
+        </fast-button>
+    </div>
+
+    <h2>Detail Default</h2>
+    <style>
+        fast-text-field {
+            display: block;
+            margin: 5px;
+        }
+        fast-card {
+            width: 200px;
+        }
+    </style>
+    <div class="container">
+        <fast-popover target="target-detailed" id="myPopoverDetailed">
+            <fast-card>
+                <fast-text-field
+                    tabindex="0"
+                    appearance="outline"
+                    placeholder="Name"
+                ></fast-text-field>
+                <fast-text-field
+                    tabindex="0"
+                    appearance="outline"
+                    autofocus
+                    placeholder="Should autofocus"
+                ></fast-text-field>
+                <fast-text-field
+                    tabindex="0"
+                    appearance="outline"
+                    placeholder="Occupation"
+                ></fast-text-field>
+            </fast-card>
+        </fast-popover>
+
+        <fast-button
+            id="target-detailed"
+            style="margin: 200px;"
+            onclick="(e) => e.stopPropagation();document.body.querySelector('#myPopoverDetailed').visible = !(document.body.querySelector('#myPopoverDetailed').visible)"
         >
             target
         </fast-button>
