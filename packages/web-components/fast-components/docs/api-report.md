@@ -254,6 +254,8 @@ export class FASTAnchor extends Anchor {
     appearanceChanged(oldValue: AnchorAppearance, newValue: AnchorAppearance): void;
     // (undocumented)
     connectedCallback(): void;
+    // @internal
+    defaultSlottedContentChanged(oldValue: any, newValue: any): void;
 }
 
 // @beta
