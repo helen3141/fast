@@ -106,6 +106,9 @@ A Popover can be less intrusive to the user experience than a Dialog and should 
 *Events*
 - `dismiss` - event fired when the Popover is dismissed
 
+*Functions*
+- `createPopoverTemplate(string: prefix)` - generates a `ViewTemplate` for the popover based on the given provided prefix string. This is required as popover uses an `anchored-region` internally and the create function generates a template using the appropriate `anchored-region` tag (ie "fast-anchored-region", "fluent-anchored-region"). Note that the appropriate `anchored-region` component must also be declared.
+
 ### Anatomy and Appearance
 Parts:
 - `popover` - the popover itself, has `role=dialog`
