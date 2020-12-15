@@ -1,5 +1,5 @@
 import { customElement } from "@microsoft/fast-element";
-import { Popover, PopoverTemplate as template } from "@microsoft/fast-foundation";
+import { createPopoverTemplate, Popover } from "@microsoft/fast-foundation";
 import { FASTAnchoredRegion } from "../anchored-region";
 import { PopoverStyles as styles } from "./popover.styles";
 
@@ -17,7 +17,7 @@ FASTAnchoredRegion;
  */
 @customElement({
     name: "fast-popover",
-    template,
+    template: createPopoverTemplate("fast"),
     styles,
 })
 export class FASTPopover extends Popover {}

@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { customElement, DOM, html } from "@microsoft/fast-element";
 import { fixture } from "../fixture";
-import { Popover, PopoverTemplate as template } from "./index";
+import { createPopoverTemplate, Popover } from "./index";
 import { PopoverPosition } from "./popover";
 import { delay } from "lodash-es";
 
 @customElement({
     name: "fast-popover",
-    template,
+    template: createPopoverTemplate("fast"),
 })
 class FASTPopover extends Popover {}
 

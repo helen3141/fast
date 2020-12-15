@@ -1,10 +1,5 @@
 import { attr, DOM, FASTElement, observable } from "@microsoft/fast-element";
-import {
-    Direction,
-    keyCodeEscape,
-    keyCodeSpace,
-    keyCodeTab,
-} from "@microsoft/fast-web-utilities";
+import { Direction, keyCodeEscape, keyCodeTab } from "@microsoft/fast-web-utilities";
 import tabbable from "tabbable";
 import { AnchoredRegion, AxisPositioningMode, AxisScalingMode } from "../anchored-region";
 import { ARIAGlobalStatesAndProperties } from "../patterns";
@@ -16,7 +11,7 @@ import { PopoverPosition } from "./popover.options";
 // TODO: UPDATE position logic switch
 // TODO: ASK Do we want trapFocus to always be true???
 // TODO: Hook in to new loaded emitted event from anchoredRegion for trapFocus
-// TODO: Bring focus back to target after popover is closed
+// TODO: ASK Should we bring focus back to target after popover is closed
 
 export { PopoverPosition };
 

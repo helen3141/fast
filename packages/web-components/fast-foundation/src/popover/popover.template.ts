@@ -1,15 +1,16 @@
-import { html, ref, when } from "@microsoft/fast-element";
+import { html, ref, ViewTemplate, when } from "@microsoft/fast-element";
 import { Popover } from "./popover";
 
 /**
- * The template for the {@link @microsoft/fast-foundation#(Popover:class)} component.
+ * Creates a template for the {@link @microsoft/fast-foundation#(Popover:class)} component using the provided prefix.
  * @public
  */
-export const PopoverTemplate = html<Popover>`
-    ${when(
-        x => x.popoverVisible,
-        html<Popover>`
-            <fast-anchored-region
+export function createPopoverTemplate(prefix: string): ViewTemplate {
+    return html<Popover>`
+        ${when(
+            x => x.popoverVisible,
+            html<Popover>`
+            <${prefix}-anchored-region
                 part="anchored-region"
                 vertical-positioning-mode="${x => x.verticalPositioningMode}"
                 vertical-default-position="${x => x.verticalDefaultPosition}"
@@ -31,7 +32,8 @@ export const PopoverTemplate = html<Popover>`
                 >
                     <slot></slot>
                 </div>
-            </fast-anchored-region>
+            </${prefix}-anchored-region>
         `
-    )}
-`;
+        )}
+    `;
+}
