@@ -88,7 +88,7 @@ export class AnchoredRegion extends FASTElement {
     horizontalPosition: AnchoredRegionHorizontalPositionLabel;
     horizontalPositioningMode: AxisPositioningMode;
     horizontalScaling: AxisScalingMode;
-    horizontalThreshold: string;
+    horizontalThreshold: number;
     // @internal
     initialLayoutComplete: boolean;
     update: () => void;
@@ -99,7 +99,7 @@ export class AnchoredRegion extends FASTElement {
     verticalPosition: AnchoredRegionVerticalPositionLabel;
     verticalPositioningMode: AxisPositioningMode;
     verticalScaling: AxisScalingMode;
-    verticalThreshold: string;
+    verticalThreshold: number;
     viewport: string;
     viewportElement: HTMLElement | null;
     }
@@ -380,10 +380,9 @@ export interface DelegatesARIALink extends ARIAGlobalStatesAndProperties {
 //
 // @public
 export class DelegatesARIAListbox {
-    // (undocumented)
     ariaActiveDescendant: string;
+    ariaDisabled: "true" | "false";
     ariaExpanded: "true" | "false" | undefined;
-    ariaPressed: "true" | "false" | "mixed" | undefined;
 }
 
 // @internal
@@ -396,6 +395,7 @@ export interface DelegatesARIAListbox extends ARIAGlobalStatesAndProperties {
 // @public
 export class DelegatesARIASelect {
     ariaExpanded: "true" | "false" | undefined;
+    ariaPressed: "true" | "false" | "mixed" | undefined;
 }
 
 // @internal
@@ -636,6 +636,9 @@ export enum HorizontalPosition {
 export function isDesignSystemConsumer(element: HTMLElement | DesignSystemConsumer): element is DesignSystemConsumer;
 
 // @public
+export function isListboxOption(el: Element): el is ListboxOption;
+
+// @public
 export function isTreeItemElement(el: Element): el is HTMLElement;
 
 // Warning: (ae-different-release-tags) This symbol has another declaration with a different release tag
@@ -645,8 +648,6 @@ export function isTreeItemElement(el: Element): el is HTMLElement;
 export class Listbox extends FASTElement {
     // @internal
     clickHandler(e: MouseEvent): boolean | void;
-    // @internal (undocumented)
-    connectedCallback(): void;
     disabled: boolean;
     // @internal (undocumented)
     get firstSelectedOption(): ListboxOption;
@@ -657,12 +658,13 @@ export class Listbox extends FASTElement {
     handleTypeAhead(key: any): void;
     // @internal
     keydownHandler(e: KeyboardEvent): boolean | void;
-    // @internal (undocumented)
-    options: ListboxOption[];
     // (undocumented)
-    optionsChanged(prev: any, next: any): void;
+    get length(): number;
+    options: ListboxOption[];
     role: string;
     selectedIndex: number;
+    // (undocumented)
+    selectedIndexChanged(prev: number, next: number): void;
     selectedOptions: ListboxOption[];
     // (undocumented)
     protected selectedOptionsChanged(prev: any, next: any): void;
@@ -675,8 +677,12 @@ export class Listbox extends FASTElement {
     selectPreviousOption(): void;
     // @internal (undocumented)
     protected setDefaultSelectedOption(): void;
-    setSelectedOption(index?: number): void;
-    static slottedOptionFilter: (n: ListboxOption) => boolean;
+    protected setSelectedOptions(): void;
+    static slottedOptionFilter: (n: HTMLElement) => boolean;
+    // @internal (undocumented)
+    slottedOptions: HTMLElement[];
+    // (undocumented)
+    slottedOptionsChanged(prev: any, next: any): void;
     // @internal
     protected typeAheadExpired: boolean;
     }
@@ -882,17 +888,18 @@ export const RadioTemplate: import("@microsoft/fast-element").ViewTemplate<Radio
 //
 // @public
 export class Select extends FormAssociatedSelect {
-    constructor();
-    // @internal (undocumented)
+    // @internal
     clickHandler(e: MouseEvent): boolean | void;
     // (undocumented)
     connectedCallback(): void;
-    get displayValue(): string;
-    // (undocumented)
+    // @internal
+    disabledChanged(prev: boolean, next: boolean): void;
+    displayValue: string;
+    // @internal
     focusoutHandler(e: FocusEvent): boolean | void;
-    // @internal (undocumented)
+    // @internal
     formResetCallback: () => void;
-    // (undocumented)
+    // @internal
     keydownHandler(e: KeyboardEvent): boolean | void;
     // @internal
     maxHeight: number;
@@ -900,14 +907,16 @@ export class Select extends FormAssociatedSelect {
     open: boolean;
     // (undocumented)
     protected openChanged(): void;
-    // (undocumented)
-    optionsChanged(prev: any, next: any): void;
     position: SelectPosition;
     positionAttribute: SelectPosition;
     role: SelectRole;
     // @internal
-    selectedOptionsChanged(prev: any, next: any): void;
+    selectedIndexChanged(prev: any, next: any): void;
     setPositioning(): void;
+    // @internal
+    slottedOptionsChanged(prev: any, next: any): void;
+    get value(): string;
+    set value(next: string);
     }
 
 // @internal (undocumented)
